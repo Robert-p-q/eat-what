@@ -34,15 +34,16 @@ select, button {
   width: 100%;
   margin-top: 10px;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid #ddd;
   font-size: 15px;
 }
 
 button {
-  background: #667eea;
+  background: linear-gradient(135deg,#667eea,#764ba2);
   color: white;
   border: none;
+  font-weight: bold;
 }
 
 button:active {
@@ -51,12 +52,56 @@ button:active {
 
 .result {
   margin-top: 15px;
-  padding: 20px;
-  border-radius: 15px;
-  background: #f5f7ff;
-  text-align: center;
-  font-size: 18px;
-  min-height: 100px;
+  min-height: 120px;
+}
+
+/* ===== 新UI卡片 ===== */
+.food-card {
+  background: #f8f9ff;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: left;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  animation: fadeIn 0.3s ease;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #666;
+}
+
+.price {
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.stall {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.food-name {
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.tags {
+  margin-top: 10px;
+}
+
+.tags span {
+  display: inline-block;
+  background: #eef0ff;
+  color: #667eea;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-right: 6px;
 }
 
 .row {
@@ -73,13 +118,9 @@ button:active {
   font-size: 14px;
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  background: #eee;
-  font-size: 12px;
-  margin-top: 5px;
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1;}
 }
 </style>
 </head>
@@ -96,8 +137,6 @@ button:active {
       <option value="一食堂">一食堂</option>
       <option value="二食堂">二食堂</option>
     </select>
-
-    <!-- 预算选项已移除 -->
 
     <button onclick="recommend()">🎲 开始推荐</button>
 
@@ -120,74 +159,17 @@ button:active {
 
 <script>
 const foods = [
-  // ===== 一食堂 =====
-  {
-    canteen: "一食堂",
-    floor: "2楼",
-    stall: "兰州牛肉面",
-    name: "尖椒牛肉拌面",
-    price: 18,
-    tags: ["面食","辣"]
-  },
-  {
-    canteen: "一食堂",
-    floor: "2楼",
-    stall: "兰州牛肉面",
-    name: "大盘鸡拌面",
-    price: 19,
-    tags: ["面食","鸡肉"]
-  },
+  { canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"尖椒牛肉拌面",price:18,tags:["面食","辣"] },
+  { canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"大盘鸡拌面",price:19,tags:["面食","鸡肉"] },
 
-  // ===== 二食堂 =====
-  {
-    canteen: "二食堂",
-    floor: "3楼",
-    stall: "杂粮煎饼",
-    name: "肉松煎饼",
-    price: 12,
-    tags: ["小吃","煎饼","热门"]
-  },
-  {
-    canteen: "二食堂",
-    floor: "3楼",
-    stall: "杂粮煎饼",
-    name: "双面烤冷面",
-    price: 9,
-    tags: ["小吃"]
-  },
-  {
-    canteen: "二食堂",
-    floor: "2楼",
-    stall: "金牌拌饭",
-    name: "招牌烤肉拌饭",
-    price: 15.8,
-    tags: ["米饭","热门"]
-  },
-  {
-    canteen: "二食堂",
-    floor: "2楼",
-    stall: "金牌拌饭",
-    name: "沙拉烤肉拌饭",
-    price: 15.8,
-    tags: ["米饭","轻食"]
-  },
-  // ===== 二食堂：炒饭专家 =====
-  {
-  canteen: "二食堂",
-  floor: "2楼",
-  stall: "炒饭专家",
-  name: "广式炒米粉",
-  price: 16,
-  tags: ["面食","米粉"]
-  },
-  {
-  canteen: "二食堂",
-  floor: "2楼",
-  stall: "炒饭专家",
-  name: "鲜香扬州炒饭",
-  price: 14.5,
-  tags: ["米饭","经典"]
-  }
+  { canteen:"二食堂",floor:"3楼",stall:"杂粮煎饼",name:"肉松煎饼",price:12,tags:["小吃","煎饼","热门"] },
+  { canteen:"二食堂",floor:"3楼",stall:"杂粮煎饼",name:"双面烤冷面",price:9,tags:["小吃"] },
+
+  { canteen:"二食堂",floor:"2楼",stall:"金牌拌饭",name:"招牌烤肉拌饭",price:15.8,tags:["米饭","热门"] },
+  { canteen:"二食堂",floor:"2楼",stall:"金牌拌饭",name:"沙拉烤肉拌饭",price:15.8,tags:["米饭","轻食"] },
+
+  { canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"广式炒米粉",price:16,tags:["面食","米粉"] },
+  { canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"鲜香扬州炒饭",price:14.5,tags:["米饭","经典"] }
 ];
 
 let current = null;
@@ -216,10 +198,22 @@ function recommend(){
 
   current = list[Math.floor(Math.random()*list.length)];
 
-  document.getElementById("result").innerHTML=
-    `<b>${current.canteen} · ${current.floor}</b><br>
-     🍽️ ${current.name}<br>
-     <span class="badge">💰 ${current.price}元</span>`;
+  document.getElementById("result").innerHTML = `
+    <div class="food-card">
+      <div class="top">
+        <span>${current.canteen} · ${current.floor}</span>
+        <span class="price">￥${current.price}</span>
+      </div>
+
+      <div class="stall">🏪 ${current.stall}</div>
+
+      <div class="food-name">${current.name}</div>
+
+      <div class="tags">
+        ${current.tags.map(tag => `<span>${tag}</span>`).join("")}
+      </div>
+    </div>
+  `;
 }
 
 function addFavorite(){
