@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今天吃什么</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+select, button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+button {
+  background: #667eea;
+  color: white;
+  border: none;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.result {
+  margin-top: 15px;
+  padding: 20px;
+  border-radius: 15px;
+  background: #f5f7ff;
+  text-align: center;
+  font-size: 18px;
+  min-height: 100px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.row button {
+  flex: 1;
+}
+
+.fav-list {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #eee;
+  font-size: 12px;
+  margin-top: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="card">
+
+    <h1>🍽️ 今天吃什么</h1>
+
+    <select id="canteen">
+      <option value="all">全部食堂</option>
+      <option value="一食堂">一食堂</option>
+      <option value="二食堂">二食堂</option>
+    </select>
+
+    <!-- 预算选项已移除 -->
+
+    <button onclick="recommend()">🎲 开始推荐</button>
+
+    <div class="result" id="result">点一下开始 👆</div>
+
+    <div class="row">
+      <button onclick="recommend()">🔄 换一个</button>
+      <button onclick="addFavorite()">❤️ 收藏</button>
+    </div>
+
+    <div class="row">
+      <button onclick="addDislike()">🚫 不想吃</button>
+      <button onclick="showFavorites()">📋 收藏</button>
+    </div>
+
+    <div class="fav-list" id="favList"></div>
+
+  </div>
+</div>
+
+<script>
+const foods = [
+  // ===== 一食堂 =====
+  {
+    canteen: "一食堂",
+    floor: "2楼",
+    stall: "兰州牛肉面",
+    name: "尖椒牛肉拌面",
+    price: 18,
+    tags: ["面食","辣"]
+  },
+  {
+    canteen: "一食堂",
+    floor: "2楼",
+    stall: "兰州牛肉面",
+    name: "大盘鸡拌面",
+    price: 19,
+    tags: ["面食","鸡肉"]
+  },
+
+  // ===== 二食堂 =====
+  {
+    canteen: "二食堂",
+    floor: "3楼",
+    stall: "杂粮煎饼",
+    name: "肉松煎饼",
+    price: 12,
+    tags: ["小吃","煎饼","热门"]
+  },
+  {
+    canteen: "二食堂",
+    floor: "3楼",
+    stall: "杂粮煎饼",
+    name: "双面烤冷面",
+    price: 9,
+    tags: ["小吃"]
+  },
+  {
+    canteen: "二食堂",
+    floor: "2楼",
+    stall: "金牌拌饭",
+    name: "招牌烤肉拌饭",
+    price: 15.8,
+    tags: ["米饭","热门"]
+  },
+  {
+    canteen: "二食堂",
+    floor: "2楼",
+    stall: "金牌拌饭",
+    name: "沙拉烤肉拌饭",
+    price: 15.8,
+    tags: ["米饭","轻食"]
+  },
+  // ===== 二食堂：炒饭专家 =====
+  {
+  canteen: "二食堂",
+  floor: "2楼",
+  stall: "炒饭专家",
+  name: "广式炒米粉",
+  price: 16,
+  tags: ["面食","米粉"]
+  },
+  {
+  canteen: "二食堂",
+  floor: "2楼",
+  stall: "炒饭专家",
+  name: "鲜香扬州炒饭",
+  price: 14.5,
+  tags: ["米饭","经典"]
+  }
+];
+
+let current = null;
+
+function getData(key){
+  return JSON.parse(localStorage.getItem(key) || "[]");
+}
+
+function setData(key,data){
+  localStorage.setItem(key,JSON.stringify(data));
+}
+
+function recommend(){
+  let canteen = document.getElementById("canteen").value;
+  let dislikes = getData("dislikes");
+
+  let list = foods.filter(f=>{
+    return (canteen==="all"||f.canteen===canteen)
+      && !dislikes.includes(f.name);
+  });
+
+  if(list.length===0){
+    document.getElementById("result").innerText="没得选了😂";
+    return;
+  }
+
+  current = list[Math.floor(Math.random()*list.length)];
+
+  document.getElementById("result").innerHTML=
+    `<b>${current.canteen} · ${current.floor}</b><br>
+     🍽️ ${current.name}<br>
+     <span class="badge">💰 ${current.price}元</span>`;
+}
+
+function addFavorite(){
+  if(!current) return;
+  let fav = getData("favorites");
+  if(!fav.includes(current.name)){
+    fav.push(current.name);
+    setData("favorites",fav);
+    alert("已收藏！");
+  }
+}
+
+function addDislike(){
+  if(!current) return;
+  let dis = getData("dislikes");
+  if(!dis.includes(current.name)){
+    dis.push(current.name);
+    setData("dislikes",dis);
+    alert("已拉黑！");
+  }
+}
+
+function showFavorites(){
+  let fav = getData("favorites");
+  let div = document.getElementById("favList");
+
+  if(fav.length===0){
+    div.innerHTML="暂无收藏";
+    return;
+  }
+
+  div.innerHTML = fav.map(f=>`❤️ ${f}`).join("<br>");
+}
+</script>
+
+</body>
+</html>
