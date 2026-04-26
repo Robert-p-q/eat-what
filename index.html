@@ -9,7 +9,9 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+
+  background: linear-gradient(135deg, #89f7fe, #66a6ff);
+  background-attachment: fixed;
 }
 
 .container {
@@ -19,10 +21,15 @@ body {
 }
 
 .card {
-  background: white;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   padding: 20px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
 
 h1 {
@@ -35,14 +42,18 @@ select, button {
   margin-top: 10px;
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid #ddd;
   font-size: 15px;
+
+  background: rgba(255,255,255,0.25);
+  border: 1px solid rgba(255,255,255,0.3);
+
+  backdrop-filter: blur(10px);
+  color: #333;
 }
 
 button {
-  background: linear-gradient(135deg,#667eea,#764ba2);
-  color: white;
-  border: none;
+  background: rgba(255,255,255,0.35);
+  color: #333;
   font-weight: bold;
 }
 
@@ -57,11 +68,14 @@ button:active {
 
 /* ===== 新UI卡片 ===== */
 .food-card {
-  background: #f8f9ff;
+  background: rgba(255,255,255,0.25);
   border-radius: 16px;
   padding: 16px;
-  text-align: left;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+
+  border: 1px solid rgba(255,255,255,0.3);
   animation: fadeIn 0.3s ease;
 }
 
@@ -95,13 +109,8 @@ button:active {
 }
 
 .tags span {
-  display: inline-block;
-  background: #eef0ff;
-  color: #667eea;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  margin-right: 6px;
+  background: rgba(255,255,255,0.4);
+  color: #333;
 }
 
 .row {
