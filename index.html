@@ -294,31 +294,106 @@ button:active {
 
 <script>
 const foods = [
-  { canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"尖椒牛肉拌面",price:18,tags:["面食","辣"] },
-  { canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"大盘鸡拌面",price:19,tags:["面食","鸡肉"] },
+  {canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"尖椒牛肉拌面",price:18,tags:["面食","辣"]},
+  {canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"大盘鸡拌面",price:19,tags:["面食","鸡肉"]},
+  {canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"红烧牛肉面",price:15,tags:["面食","经典"]},
 
-  { canteen:"二食堂",floor:"3楼",stall:"杂粮煎饼",name:"肉松煎饼",price:12,tags:["小吃","煎饼","热门"] },
-  { canteen:"二食堂",floor:"3楼",stall:"杂粮煎饼",name:"双面烤冷面",price:9,tags:["小吃"] },
+  {canteen:"二食堂",floor:"3楼",stall:"杂粮煎饼",name:"肉松煎饼",price:12,tags:["小吃","煎饼","热门"]},
+  {canteen:"二食堂",floor:"3楼",stall:"杂粮煎饼",name:"双面烤冷面",price:9,tags:["小吃"]},
 
-  { canteen:"二食堂",floor:"2楼",stall:"金牌拌饭",name:"招牌烤肉拌饭",price:15.8,tags:["米饭","热门"] },
-  { canteen:"二食堂",floor:"2楼",stall:"金牌拌饭",name:"沙拉烤肉拌饭",price:15.8,tags:["米饭","轻食"] },
+  {canteen:"二食堂",floor:"2楼",stall:"金牌拌饭",name:"招牌烤肉拌饭",price:15.8,tags:["米饭","热门"]},
+  {canteen:"二食堂",floor:"2楼",stall:"金牌拌饭",name:"沙拉烤肉拌饭",price:15.8,tags:["米饭","轻食"]},
+  {canteen:"二食堂",floor:"3楼",stall:"金牌拌饭",name:"沙拉烤肉拌饭",price:16,tags:["米饭","经典"]},
+  {canteen:"二食堂",floor:"3楼",stall:"金牌拌饭",name:"香辣烤肉拌饭",price:16,tags:["米饭","辣"]},
 
-  { canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"广式炒米粉",price:16,tags:["面食","米粉"] },
-  { canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"鲜香扬州炒饭",price:14.5,tags:["米饭","经典"] },
+  {canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"广式炒米粉",price:16,tags:["面食","米粉"]},
+  {canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"鲜香扬州炒饭",price:14.5,tags:["米饭","经典"]},
+  {canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"酱香火腿蛋炒饭",price:14.5,tags:["炒饭","火腿","鸡蛋","主食","快餐"]},
+  {canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"香煎培根鸡蛋炒饭",price:15,tags:["炒饭","培根","鸡蛋","主食","快餐"]},
 
-  { canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"红烧牛肉面",price:15,tags:["面食","经典"] },
-  { canteen:"二食堂",floor:"3楼",stall:"金牌拌饭",name:"沙拉烤肉拌饭",price:16,tags:["米饭","经典"] },
+  {canteen:"二食堂",floor:"2楼",stall:"现炒浇头面",name:"辣椒炒肉浇头面",price:16,tags:["面","辣"]},
+  {canteen:"二食堂",floor:"2楼",stall:"现炒浇头面",name:"农家一碗香浇头面",price:16,tags:["面","香辣"]},
 
-  { canteen:"二食堂",floor:"3楼",stall:"金牌拌饭",name:"香辣烤肉拌饭",price:16,tags:["米饭","辣"] },
-  { canteen:"二食堂",floor:"2楼",stall:"现炒浇头面",name:"辣椒炒肉浇头面",price:16,tags:["面","辣"] },
+  {canteen:"二食堂",floor:"2楼",stall:"鱼之谷鱼粉",name:"酸辣巴沙鱼粉",price:16,tags:["面","酸辣"]},
+  {canteen:"二食堂",floor:"2楼",stall:"鱼之谷鱼粉",name:"肥汁金汤口味巴沙鱼粉",price:15.5,tags:["面","酸辣"]},
 
-  { canteen:"二食堂",floor:"2楼",stall:"现炒浇头面",name:"农家一碗香浇头面",price:16,tags:["面","香辣"] },
-  { canteen:"二食堂",floor:"2楼",stall:"鱼之谷鱼粉",name:"酸辣巴沙鱼粉",price:16,tags:["面","酸辣"] },
+  {canteen:"二食堂",floor:"2楼",stall:"一纸鸡",name:"大阪照烧鸡肉饭",price:14,tags:["米饭"]},
+  {canteen:"二食堂",floor:"2楼",stall:"一纸鸡",name:"蜀香鸡饭",price:14,tags:["米饭"]},
 
-  { canteen:"二食堂",floor:"2楼",stall:"鱼之谷鱼粉",name:"肥汁金汤口味巴沙鱼粉",price:15.5,tags:["面","酸辣"] },
-  { canteen:"二食堂",floor:"2楼",stall:"一纸鸡",name:"大阪照烧鸡肉饭",price:14,tags:["米饭"] },
+  {canteen:"二食堂",floor:"2楼",stall:"土豆粉",name:"锡纸花甲粉",price:15.8,tags:["粉面","花甲"]},
+  {canteen:"二食堂",floor:"2楼",stall:"土豆粉",name:"众品土豆粉",price:13,tags:["粉面","土豆粉"]},
+  {canteen:"二食堂",floor:"2楼",stall:"土豆粉",name:"鱼豆腐土豆粉",price:14,tags:["粉面","土豆粉","鱼豆腐"]},
 
-  { canteen:"二食堂",floor:"2楼",stall:"一纸鸡",name:"蜀香鸡饭",price:14,tags:["米饭"] }
+  {canteen:"二食堂",floor:"2楼",stall:"昆吉双拼饭",name:"双拼饭-照烧鸡腿肉",price:16,tags:["米饭","双拼饭","鸡肉"]},
+  {canteen:"二食堂",floor:"2楼",stall:"昆吉双拼饭",name:"双拼饭-卤汁护心肉",price:16,tags:["米饭","双拼饭","猪肉"]},
+  {canteen:"二食堂",floor:"2楼",stall:"昆吉双拼饭",name:"卤汁护心肉饭套餐",price:16,tags:["米饭","套餐","猪肉"]},
+
+  {canteen:"一食堂",floor:"1楼",stall:"忆德水饺",name:"肉三鲜水饺",price:14.5,tags:["水饺","主食"]},
+  {canteen:"一食堂",floor:"1楼",stall:"忆德水饺",name:"牛肉水饺",price:18,tags:["水饺","主食","牛肉"]},
+  {canteen:"一食堂",floor:"1楼",stall:"忆德水饺",name:"馄饨面",price:11.5,tags:["面类","馄饨","主食"]},
+
+  {canteen:"二食堂",floor:"3楼",stall:"蜀道吉水煮肉",name:"水煮鱼肉",price:16.8,tags:["川菜","鱼肉","下饭菜"]},
+  {canteen:"二食堂",floor:"3楼",stall:"蜀道吉水煮肉",name:"水煮鸡肉",price:16,tags:["川菜","鸡肉","下饭菜"]},
+  {canteen:"二食堂",floor:"3楼",stall:"蜀道吉水煮肉",name:"水煮豆腐",price:14,tags:["川菜","素菜","豆腐","下饭菜"]},
+
+  {canteen:"二食堂",floor:"2楼",stall:"自选水饺",name:"馄饨面-小份",price:10,tags:["面类","馄饨","主食"]},
+  {canteen:"二食堂",floor:"2楼",stall:"自选水饺",name:"韭菜鸡蛋饺子",price:16,tags:["水饺","素馅","主食"]},
+  {canteen:"二食堂",floor:"2楼",stall:"自选水饺",name:"现包馄饨大份",price:15,tags:["馄饨","主食"]},
+
+  {canteen:"二食堂",floor:"3楼",stall:"小街牛杂面",name:"小街牛杂面",price:14,tags:["面类","牛杂","主食"]},
+  {canteen:"二食堂",floor:"3楼",stall:"小街牛杂面",name:"小街牛肉面",price:16,tags:["面类","牛肉","主食"]},
+  {canteen:"二食堂",floor:"3楼",stall:"小街牛杂面",name:"小街牛肚面",price:16,tags:["面类","牛肚","主食"]},
+
+  {canteen:"二食堂",floor:"2楼",stall:"杭州小笼包",name:"牛肉小笼包套餐",price:15.8,tags:["包子","早餐","牛肉"]},
+  {canteen:"二食堂",floor:"2楼",stall:"杭州小笼包",name:"牛肉小笼包",price:11.8,tags:["包子","早餐","牛肉"]},
+  {canteen:"二食堂",floor:"2楼",stall:"杭州小笼包",name:"掉渣饼+鸡蛋鸡排套餐",price:12,tags:["饼类","早餐","快餐"]},
+
+  {canteen:"二食堂",floor:"3楼",stall:"鲍汁捞饭",name:"鲍汁鸡柳捞饭",price:16.8,tags:["米饭","捞饭","快餐","鸡柳"]},
+  {canteen:"二食堂",floor:"3楼",stall:"鲍汁捞饭",name:"匠心鲍汁排骨捞饭",price:17.8,tags:["米饭","捞饭","快餐","排骨"]},
+  {canteen:"二食堂",floor:"3楼",stall:"鲍汁捞饭",name:"鲍汁大鸡排捞饭",price:16.8,tags:["米饭","捞饭","快餐","鸡排"]},
+
+  {canteen:"一食堂",floor:"1楼",stall:"津五爷大块牛肉饭",name:"爆汁大块牛肉饭",price:15.8,tags:["米饭","牛肉饭","快餐","牛肉"]},
+  {canteen:"一食堂",floor:"1楼",stall:"津五爷大块牛肉饭",name:"番茄大块牛肉饭",price:16.8,tags:["米饭","牛肉饭","快餐","牛肉","番茄"]},
+  {canteen:"一食堂",floor:"1楼",stall:"津五爷大块牛肉饭",name:"双拼大块牛肉饭",price:18.8,tags:["米饭","双拼饭","快餐","牛肉"]},
+
+  {canteen:"一食堂",floor:"1楼",stall:"范书闻麻辣烫麻辣拌",name:"麻辣烫套餐",price:16.8,tags:["麻辣烫","自选","快餐","汤类"]},
+  {canteen:"一食堂",floor:"1楼",stall:"范书闻麻辣烫麻辣拌",name:"麻辣拌套餐",price:19.8,tags:["麻辣拌","干拌","自选","快餐"]},
+
+  {canteen:"二食堂",floor:"3楼",stall:"烤鸭饭",name:"烤鸭饭套餐大份",price:17,tags:["米饭","烤鸭","套餐","快餐"]},
+  {canteen:"二食堂",floor:"3楼",stall:"烤鸭饭",name:"烤鸭+脆皮五花肉",price:17,tags:["烤鸭","五花肉","卤味","快餐"]},
+  {canteen:"二食堂",floor:"3楼",stall:"烤鸭饭",name:"咸鸭蛋",price:2.5,tags:["配菜","卤味","小吃"]},
+
+  {canteen:"二食堂",floor:"2楼",stall:"米粉米线",name:"招牌肉沫米粉",price:16,tags:["米粉","肉沫","主食","粉面"]},
+  {canteen:"二食堂",floor:"2楼",stall:"米粉米线",name:"炸蛋米粉",price:14,tags:["米粉","炸蛋","主食","粉面"]},
+  {canteen:"二食堂",floor:"2楼",stall:"米粉米线",name:"肥牛米线",price:15,tags:["米线","肥牛","主食","粉面"]},
+
+  {canteen:"一食堂",floor:"2楼",stall:"淮南牛肉汤饼",name:"牛肉粉丝汤+饼",price:12,tags:["汤粉","牛肉","饼","主食"]},
+  {canteen:"一食堂",floor:"2楼",stall:"淮南牛肉汤饼",name:"拆骨肉粉丝汤+饼",price:12.5,tags:["汤粉","拆骨肉","饼","主食"]},
+  {canteen:"一食堂",floor:"2楼",stall:"淮南牛肉汤饼",name:"牛杂粉丝汤+饼",price:12,tags:["汤粉","牛杂","饼","主食"]},
+
+  {canteen:"二食堂",floor:"3楼",stall:"羊杂面",name:"羊杂面",price:14,tags:["面类","羊杂","主食","汤面"]},
+  {canteen:"二食堂",floor:"3楼",stall:"羊杂面",name:"辣肉拌面",price:14,tags:["面类","拌面","辣肉","主食"]},
+  {canteen:"二食堂",floor:"3楼",stall:"羊杂面",name:"小馆辣肉汤面",price:14,tags:["面类","汤面","辣肉","主食"]},
+
+  {canteen:"二食堂",floor:"2楼",stall:"热干面",name:"安徽板面",price:13,tags:["面类","板面","主食","汤面"]},
+  {canteen:"二食堂",floor:"2楼",stall:"热干面",name:"酱爆猪肝浇头面",price:14,tags:["面类","浇头面","猪肝","主食"]},
+  {canteen:"二食堂",floor:"2楼",stall:"热干面",name:"热干面",price:13,tags:["面类","热干面","干拌面","主食"]},
+
+  {canteen:"二食堂",floor:"2楼",stall:"渔之谷鱼粉",name:"肥汁金汤口味巴沙鱼粉",price:15.5,tags:["鱼粉","金汤","巴沙鱼","主食","粉面"]},
+  {canteen:"二食堂",floor:"2楼",stall:"渔之谷鱼粉",name:"川香麻辣口味巴沙鱼粉",price:15.5,tags:["鱼粉","麻辣","巴沙鱼","主食","粉面"]},
+  {canteen:"二食堂",floor:"2楼",stall:"渔之谷鱼粉",name:"浓香番茄口味小酥肉鱼粉",price:15,tags:["鱼粉","番茄","小酥肉","主食","粉面"]},
+
+  {canteen:"二食堂",floor:"2楼",stall:"辣椒炒肉",name:"农家一碗香",price:15.8,tags:["盖饭","湘菜","快餐","米饭"]},
+  {canteen:"二食堂",floor:"2楼",stall:"辣椒炒肉",name:"招牌辣椒炒肉",price:15.8,tags:["盖饭","湘菜","辣椒炒肉","米饭","快餐"]},
+  {canteen:"二食堂",floor:"2楼",stall:"辣椒炒肉",name:"湘味小炒茄子",price:12.8,tags:["盖饭","湘菜","茄子","米饭","快餐"]},
+
+  {canteen:"一食堂",floor:"1楼",stall:"天意米粉",name:"炸蛋肉酱米粉",price:14,tags:["米粉","炸蛋","肉酱","主食","粉面"]},
+  {canteen:"一食堂",floor:"1楼",stall:"天意米粉",name:"原味肉酱米粉",price:11,tags:["米粉","肉酱","主食","粉面"]},
+  {canteen:"一食堂",floor:"1楼",stall:"天意米粉",name:"煎蛋肉酱米粉",price:13,tags:["米粉","煎蛋","肉酱","主食","粉面"]},
+
+  {canteen:"一食堂",floor:"3楼",stall:"土家烧饼档",name:"掉渣饼+烤鸡蛋",price:6,tags:["饼类","早餐","小吃","快餐"]},
+  {canteen:"一食堂",floor:"3楼",stall:"土家烧饼档",name:"掉渣饼+鸡柳+小料",price:7.5,tags:["饼类","鸡柳","早餐","小吃","快餐"]},
+  {canteen:"一食堂",floor:"3楼",stall:"土家烧饼档",name:"掉渣饼+鸡蛋+里脊",price:9,tags:["饼类","里脊","鸡蛋","早餐","小吃","快餐"]}
 ];
 
 let current = null;
