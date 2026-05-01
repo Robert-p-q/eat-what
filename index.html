@@ -39,6 +39,10 @@
   --dot-favlist:    #2A9D8F;
 }
 
+html, body{
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
@@ -52,6 +56,7 @@ body {
     radial-gradient(circle at 90% 90%, var(--bg-blob4), transparent 60%);
 
   background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 body::before {
@@ -60,6 +65,16 @@ body::before {
   inset: 0;
   background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4), transparent 40%);
   pointer-events: none;
+}
+
+/* 移动端避免 fixed 背景分块/断层 */
+@media (max-width: 768px){
+  body{
+    background-attachment: scroll;
+  }
+  body::before{
+    position: absolute;
+  }
 }
 
 .container {
@@ -237,6 +252,117 @@ button:active {
   flex: 1;
 }
 
+.filters{
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.26);
+  border: 1px solid rgba(255,255,255,0.60);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.filters-details{
+  margin-top: 12px;
+}
+
+.filters-summary{
+  list-style: none;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.26);
+  border: 1px solid rgba(255,255,255,0.60);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  user-select: none;
+}
+
+/* Chrome 默认三角 */
+.filters-summary::-webkit-details-marker{
+  display: none;
+}
+
+.filters-summary-left{
+  font-weight: 800;
+  color: rgba(13,43,78,0.92);
+  flex: 0 0 auto;
+}
+
+.filters-summary-right{
+  font-size: 12px;
+  color: rgba(13,43,78,0.72);
+  text-align: right;
+  line-height: 1.25;
+  flex: 1 1 auto;
+}
+
+.filters-details[open] .filters-summary{
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.filters-details .filters{
+  margin-top: 10px;
+}
+
+.filter-group + .filter-group{
+  margin-top: 12px;
+}
+
+.filter-title{
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(13,43,78,0.78);
+  margin-bottom: 8px;
+}
+
+.chip-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip{
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(255,255,255,0.70);
+  background: rgba(255,255,255,0.30);
+  color: rgba(13,43,78,0.92);
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.chip[aria-pressed="true"]{
+  background: rgba(255,255,255,0.55);
+  border-color: rgba(58,120,201,0.55);
+  box-shadow: 0 0 0 2px rgba(58,120,201,0.18);
+}
+
+.chip:active{
+  transform: scale(0.98);
+}
+
+.filter-actions{
+  margin-top: 12px;
+}
+
+.btn-ghost{
+  background: rgba(255,255,255,0.26);
+  color: rgba(13,43,78,0.92);
+  border: 1px solid rgba(255,255,255,0.65);
+}
+
 .fav-list {
   margin-top: 10px;
   font-size: 14px;
@@ -327,6 +453,29 @@ button:disabled{
       <option value="一食堂">一食堂</option>
       <option value="二食堂">二食堂</option>
     </select>
+
+    <details class="filters-details" id="filtersDetails">
+      <summary class="filters-summary">
+        <span class="filters-summary-left">🔎 筛选</span>
+        <span class="filters-summary-right" id="filtersSummaryText">口味：不限；主食：不限（可选 0 道）</span>
+      </summary>
+
+      <div class="filters" aria-label="筛选条件">
+        <div class="filter-group" aria-label="口味筛选">
+          <div class="filter-title">口味</div>
+          <div class="chip-row" id="tasteChips"></div>
+        </div>
+
+        <div class="filter-group" aria-label="主食筛选">
+          <div class="filter-title">主食</div>
+          <div class="chip-row" id="stapleChips"></div>
+        </div>
+
+        <div class="filter-actions">
+          <button id="clearFiltersBtn" type="button" class="btn-ghost">清空筛选</button>
+        </div>
+      </div>
+    </details>
 
     <button id="primaryBtn" type="button" onclick="recommend()">🎲 开始推荐</button>
 
@@ -458,6 +607,26 @@ let current = null;
 let statusTimer = null;
 let favoritesVisible = false;
 
+const TASTE_OPTIONS = [
+  { id: "辣", label: "辣" },
+  { id: "香辣", label: "香辣" },
+  { id: "麻辣", label: "麻辣" },
+  { id: "酸辣", label: "酸辣" },
+];
+
+const STAPLE_OPTIONS = [
+  { id: "米饭", label: "米饭" },
+  { id: "面", label: "面" },
+  { id: "粉", label: "粉" },
+  { id: "饺子馄饨", label: "饺子/馄饨" },
+  { id: "饼包", label: "饼/包子" },
+];
+
+const selected = {
+  taste: new Set(),
+  staple: new Set(),
+};
+
 function getData(key){
   return JSON.parse(localStorage.getItem(key) || "[]");
 }
@@ -489,18 +658,123 @@ function setPrimaryLabel(hasCurrent){
   btn.textContent = hasCurrent ? "🔄 再来一个" : "🎲 开始推荐";
 }
 
-function recommend(){
-  let canteen = document.getElementById("canteen").value;
-  let dislikes = getData("dislikes");
+function hasAnyTag(food, tagList){
+  const tags = Array.isArray(food?.tags) ? food.tags : [];
+  return tagList.some(t => tags.includes(t));
+}
 
-  let list = foods.filter(f=>{
-    return (canteen==="all"||f.canteen===canteen)
-      && !dislikes.includes(f.name);
+function matchTaste(food){
+  if(selected.taste.size === 0) return true;
+  const wants = Array.from(selected.taste);
+  return wants.some(t => {
+    if(t === "辣") return hasAnyTag(food, ["辣"]);
+    if(t === "香辣") return hasAnyTag(food, ["香辣"]);
+    if(t === "麻辣") return hasAnyTag(food, ["麻辣"]);
+    if(t === "酸辣") return hasAnyTag(food, ["酸辣"]);
+    return false;
   });
+}
+
+function matchStaple(food){
+  if(selected.staple.size === 0) return true;
+  const wants = Array.from(selected.staple);
+  return wants.some(s => {
+    if(s === "米饭") return hasAnyTag(food, ["米饭","盖饭","炒饭","捞饭","牛肉饭","双拼饭"]);
+    if(s === "面") return hasAnyTag(food, ["面","面食","面类","拌面","汤面","浇头面","板面","热干面","干拌面"]);
+    if(s === "粉") return hasAnyTag(food, ["米粉","米线","鱼粉","土豆粉","粉面","汤粉","粉丝"]);
+    if(s === "饺子馄饨") return hasAnyTag(food, ["水饺","馄饨"]);
+    if(s === "饼包") return hasAnyTag(food, ["饼类","煎饼","包子"]);
+    return false;
+  });
+}
+
+function getFilteredList(){
+  const canteen = document.getElementById("canteen")?.value || "all";
+  const dislikes = getData("dislikes");
+
+  return foods.filter(f=>{
+    return (canteen==="all"||f.canteen===canteen)
+      && !dislikes.includes(f.name)
+      && matchTaste(f)
+      && matchStaple(f);
+  });
+}
+
+function updateFilterStatus(){
+  const list = getFilteredList();
+  const tasteText = selected.taste.size ? `口味：${Array.from(selected.taste).join("、")}` : "口味：不限";
+  const stapleText = selected.staple.size ? `主食：${Array.from(selected.staple).join("、")}` : "主食：不限";
+  const text = `${tasteText}；${stapleText}（可选 ${list.length} 道）`;
+  showStatus(text);
+
+  const summary = document.getElementById("filtersSummaryText");
+  if(summary) summary.textContent = text;
+}
+
+function setChipPressed(btn, pressed){
+  btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+}
+
+function toggleSet(set, value){
+  if(set.has(value)) set.delete(value);
+  else set.add(value);
+}
+
+function renderChips(containerId, options, key){
+  const wrap = document.getElementById(containerId);
+  if(!wrap) return;
+
+  wrap.innerHTML = options.map(opt => {
+    const id = String(opt.id || "").trim();
+    const label = String(opt.label || "").trim();
+    return `<button type="button" class="chip" data-filter-key="${key}" data-filter-value="${id}" aria-pressed="false">${label}</button>`;
+  }).join("");
+
+  wrap.querySelectorAll(".chip").forEach(btn => {
+    btn.addEventListener("click", (e)=>{
+      const b = e.currentTarget;
+      const k = b?.dataset?.filterKey;
+      const v = b?.dataset?.filterValue;
+      if(!k || !v) return;
+      const set = selected[k];
+      if(!(set instanceof Set)) return;
+
+      toggleSet(set, v);
+      setChipPressed(b, set.has(v));
+
+      // 即时刷新：清空当前推荐，提示重新抽取
+      current = null;
+      setActionEnabled(false);
+      setPrimaryLabel(false);
+      const resultEl = document.getElementById("result");
+      if(resultEl) resultEl.innerText = "已筛选，点一下开始 👆";
+      updateFilterStatus();
+    });
+  });
+}
+
+function clearFilters(){
+  selected.taste.clear();
+  selected.staple.clear();
+
+  document.querySelectorAll(".chip").forEach(btn => {
+    setChipPressed(btn, false);
+  });
+
+  current = null;
+  setActionEnabled(false);
+  setPrimaryLabel(false);
+  const resultEl = document.getElementById("result");
+  if(resultEl) resultEl.innerText = "已清空筛选，点一下开始 👆";
+  updateFilterStatus();
+}
+
+function recommend(){
+  let list = getFilteredList();
 
   if(list.length===0){
     document.getElementById("result").innerText="没得选了😂";
-    showStatus("提示：可以去“收藏”或清空“不想吃”再试试");
+    showStatus("提示：放宽筛选条件，或去“收藏/不想吃”看看");
     return;
   }
 
@@ -614,6 +888,19 @@ function clearFavorites(){
 // init
 setActionEnabled(false);
 setPrimaryLabel(false);
+renderChips("tasteChips", TASTE_OPTIONS, "taste");
+renderChips("stapleChips", STAPLE_OPTIONS, "staple");
+document.getElementById("clearFiltersBtn")?.addEventListener("click", clearFilters);
+document.getElementById("filtersDetails")?.removeAttribute("open");
+document.getElementById("canteen")?.addEventListener("change", ()=>{
+  current = null;
+  setActionEnabled(false);
+  setPrimaryLabel(false);
+  const resultEl = document.getElementById("result");
+  if(resultEl) resultEl.innerText = "已切换食堂/筛选，点一下开始 👆";
+  updateFilterStatus();
+});
+updateFilterStatus();
 </script>
 
 </body>
