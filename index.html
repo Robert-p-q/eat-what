@@ -88,26 +88,17 @@ h1 {
 }
 
 .stall {
-  color: var(--text-sub);
-}
-
-.top {
-  color: var(--text-hint);
-}
-
-.food-name {
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.stall {
-  font-size: 15px;
   color: #444;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 6px;
 }
 
 .top {
-  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
   color: #666;
+  font-size: 14px;
 }
 
 /* ===== select（食堂选择） ===== */
@@ -180,6 +171,17 @@ button:active {
   min-height: 120px;
 }
 
+.status{
+  margin-top: 10px;
+  min-height: 18px;
+  font-size: 13px;
+  color: rgba(13,43,78,0.75);
+}
+
+.status.show{
+  animation: fadeIn 0.18s ease;
+}
+
 /* ===== 新UI卡片 ===== */
 .food-card {
   background: var(--glass-result);
@@ -196,24 +198,10 @@ button:active {
     inset 0 1px rgba(255,255,255,0.7);
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: #666;
-}
-
 .price {
   font-size: 18px;
   font-weight: bold;
   color: #ff6b6b;
-}
-
-.stall {
-  margin-top: 6px;
-  font-size: 16px;
-  color: #667eea;
-  font-weight: bold;
 }
 
 .food-name {
@@ -223,7 +211,10 @@ button:active {
 }
 
 .tags {
-  margin-top: 10px;
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .tags span {
@@ -231,6 +222,10 @@ button:active {
   color: var(--text-sub);
 
   border: 1px solid var(--glass-border);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .row {
@@ -247,10 +242,69 @@ button:active {
   font-size: 14px;
 }
 
-.container {
-  max-width: 420px;
-  margin: auto;
-  padding: 30px 18px;
+.fav-ul{
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.fav-li{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.28);
+  border: 1px solid rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.fav-empty{
+  color: rgba(13,43,78,0.6);
+  padding: 6px 2px;
+}
+
+.fav-name{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fav-remove{
+  width: auto;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  background: rgba(255,255,255,0.32);
+  color: rgba(13,43,78,0.9);
+  border: 1px solid rgba(255,255,255,0.65);
+}
+
+button:disabled{
+  opacity: 0.55;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 480px){
+  body{ background-attachment: scroll; }
 }
 
 @keyframes fadeIn {
@@ -267,27 +321,31 @@ button:active {
 
     <h1>🍽️ 今天吃什么</h1>
 
+    <label class="sr-only" for="canteen">选择食堂</label>
     <select id="canteen">
       <option value="all">全部食堂</option>
       <option value="一食堂">一食堂</option>
       <option value="二食堂">二食堂</option>
     </select>
 
-    <button onclick="recommend()">🎲 开始推荐</button>
+    <button id="primaryBtn" type="button" onclick="recommend()">🎲 开始推荐</button>
 
-    <div class="result" id="result">点一下开始 👆</div>
+    <div class="result" id="result" aria-live="polite">点一下开始 👆</div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
 
     <div class="row">
-      <button onclick="recommend()">🔄 换一个</button>
-      <button onclick="addFavorite()">❤️ 收藏</button>
+      <button id="favBtn" type="button" onclick="addFavorite()" disabled>❤️ 收藏</button>
+      <button id="banBtn" type="button" onclick="addDislike()" disabled>🚫 不想吃</button>
     </div>
 
     <div class="row">
-      <button onclick="addDislike()">🚫 不想吃</button>
-      <button onclick="showFavorites()">📋 收藏</button>
+      <button id="showFavBtn" type="button" onclick="toggleFavorites()">📋 收藏</button>
+      <button id="clearFavBtn" type="button" onclick="clearFavorites()" disabled>🧹 清空收藏</button>
     </div>
 
-    <div class="fav-list" id="favList"></div>
+    <div class="fav-list" id="favList" hidden>
+      <ul class="fav-ul" id="favUl"></ul>
+    </div>
 
   </div>
 </div>
@@ -397,6 +455,8 @@ const foods = [
 ];
 
 let current = null;
+let statusTimer = null;
+let favoritesVisible = false;
 
 function getData(key){
   return JSON.parse(localStorage.getItem(key) || "[]");
@@ -404,6 +464,29 @@ function getData(key){
 
 function setData(key,data){
   localStorage.setItem(key,JSON.stringify(data));
+}
+
+function showStatus(message){
+  const el = document.getElementById("status");
+  if(!el) return;
+  el.textContent = message;
+  el.classList.add("show");
+  if(statusTimer) window.clearTimeout(statusTimer);
+  statusTimer = window.setTimeout(()=>{
+    el.classList.remove("show");
+    el.textContent = "";
+  }, 2000);
+}
+
+function setActionEnabled(enabled){
+  document.getElementById("favBtn").disabled = !enabled;
+  document.getElementById("banBtn").disabled = !enabled;
+}
+
+function setPrimaryLabel(hasCurrent){
+  const btn = document.getElementById("primaryBtn");
+  if(!btn) return;
+  btn.textContent = hasCurrent ? "🔄 再来一个" : "🎲 开始推荐";
 }
 
 function recommend(){
@@ -417,6 +500,7 @@ function recommend(){
 
   if(list.length===0){
     document.getElementById("result").innerText="没得选了😂";
+    showStatus("提示：可以去“收藏”或清空“不想吃”再试试");
     return;
   }
 
@@ -427,6 +511,8 @@ do {
 } while (list.length > 1 && current && newFood.name === current.name);
 
 current = newFood;
+setActionEnabled(true);
+setPrimaryLabel(true);
 
   document.getElementById("result").innerHTML = `
     <div class="food-card">
@@ -452,7 +538,11 @@ function addFavorite(){
   if(!fav.includes(current.name)){
     fav.push(current.name);
     setData("favorites",fav);
-    alert("已收藏！");
+    showStatus("已收藏");
+    renderFavorites();
+  }
+  else{
+    showStatus("已在收藏里");
   }
 }
 
@@ -462,21 +552,68 @@ function addDislike(){
   if(!dis.includes(current.name)){
     dis.push(current.name);
     setData("dislikes",dis);
-    alert("已拉黑！");
+    showStatus("已标记为不想吃");
+  }
+  else{
+    showStatus("已经是不想吃了");
   }
 }
 
-function showFavorites(){
-  let fav = getData("favorites");
-  let div = document.getElementById("favList");
+function toggleFavorites(){
+  favoritesVisible = !favoritesVisible;
+  const wrap = document.getElementById("favList");
+  if(wrap) wrap.hidden = !favoritesVisible;
+  renderFavorites();
+}
 
-  if(fav.length===0){
-    div.innerHTML="暂无收藏";
+function renderFavorites(){
+  let fav = getData("favorites");
+  const ul = document.getElementById("favUl");
+  const clearBtn = document.getElementById("clearFavBtn");
+  if(clearBtn) clearBtn.disabled = fav.length===0;
+  if(!ul) return;
+
+  if(!favoritesVisible){
     return;
   }
 
-  div.innerHTML = fav.map(f=>`❤️ ${f}`).join("<br>");
+  if(fav.length===0){
+    ul.innerHTML = `<li class="fav-empty">暂无收藏</li>`;
+    return;
+  }
+
+  ul.innerHTML = fav.map(name => `
+    <li class="fav-li">
+      <span class="fav-name">❤️ ${name}</span>
+      <button type="button" class="fav-remove" data-name="${name.replaceAll('"','&quot;')}">移除</button>
+    </li>
+  `).join("");
+
+  ul.querySelectorAll(".fav-remove").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      const n = e.currentTarget?.dataset?.name;
+      if(!n) return;
+      removeFavorite(n);
+    });
+  });
 }
+
+function removeFavorite(name){
+  const fav = getData("favorites").filter(x=>x!==name);
+  setData("favorites", fav);
+  showStatus("已移除");
+  renderFavorites();
+}
+
+function clearFavorites(){
+  setData("favorites", []);
+  showStatus("已清空收藏");
+  renderFavorites();
+}
+
+// init
+setActionEnabled(false);
+setPrimaryLabel(false);
 </script>
 
 </body>
