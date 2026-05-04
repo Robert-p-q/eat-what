@@ -116,29 +116,102 @@ h1 {
   font-size: 14px;
 }
 
-/* ===== select（食堂选择） ===== */
-select {
-  width: 100%;
+/* ===== 自定义下拉（食堂选择） ===== */
+.custom-select {
+  position: relative;
   margin-top: 10px;
+}
+
+.select-trigger {
+  width: 100%;
+  margin: 0;
   padding: 14px;
   border-radius: 16px;
   font-size: 16px;
-
   background: var(--glass-sel);
   border: 1px solid var(--glass-border);
-
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-
   color: var(--text-title);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-weight: 400;
+  text-align: left;
+  transition: background 0.2s ease;
+}
 
-  appearance: none;
-  -webkit-appearance: none;
+.select-trigger:hover {
+  background: rgba(255,255,255,0.52);
+}
 
-  /* iOS箭头 */
-  background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 7L10 12L15 7' stroke='%230D2B4E' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
+.select-trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(58,120,201,0.3);
+}
+
+.select-arrow {
+  display: flex;
+  align-items: center;
+  transition: transform 0.25s ease;
+  color: var(--text-title);
+  line-height: 0;
+}
+
+.select-arrow.open {
+  transform: rotate(180deg);
+}
+
+.select-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.58);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  z-index: 100;
+  box-sizing: border-box;
+  animation: dropdownIn 0.2s ease;
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.select-option {
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  color: var(--text-title);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.select-option:hover {
+  background: rgba(255,255,255,0.5);
+}
+
+.select-option[aria-selected="true"] {
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(58,120,201,0.35);
+  font-weight: 700;
+  box-shadow: 0 0 0 2px rgba(58,120,201,0.15);
+}
+
+.select-option:active {
+  transform: scale(0.98);
 }
 
 
@@ -150,19 +223,6 @@ button {
   border-radius: 14px;
   font-size: 16px;
 
-  background: var(--btn-primary);
-  color: var(--btn-primary-text);
-  font-weight: 600;
-
-  border: none;
-}
-
-select:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(58,120,201,0.3);
-}
-
-button {
   background: var(--btn-primary);
   color: var(--btn-primary-text);
   font-weight: 600;
@@ -197,6 +257,35 @@ button:active {
   animation: fadeIn 0.18s ease;
 }
 
+.app-blocked .select-trigger,
+.app-blocked button:not(.retry-btn),
+.app-blocked .chip{
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.app-blocked .load-error .retry-btn{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.app-error .filters-summary-right{
+  color: #b42318;
+}
+
+.load-error{
+  color: var(--text-title);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.load-error .retry-btn{
+  margin-top: 12px;
+  width: auto;
+  min-width: 120px;
+  padding: 10px 16px;
+}
+
 /* ===== 新UI卡片 ===== */
 .food-card {
   background: var(--glass-result);
@@ -211,6 +300,62 @@ button:active {
   box-shadow:
     0 4px 15px rgba(0,0,0,0.06),
     inset 0 1px rgba(255,255,255,0.7);
+}
+
+/* ===== 菜品图片 ===== */
+.food-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: rgba(255,255,255,0.25);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 4px 15px rgba(0,0,0,0.06),
+    inset 0 1px rgba(255,255,255,0.6);
+}
+
+/* 毛玻璃遮罩：让图片透出玻璃质感 */
+.food-img-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.18) 0%,
+    transparent 40%,
+    transparent 70%,
+    rgba(255,255,255,0.08) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.food-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease, filter 0.35s ease;
+  position: absolute;
+  inset: 0;
+}
+
+.food-card:hover .food-img {
+  transform: scale(1.05);
+}
+
+.food-img-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  color: rgba(13,43,78,0.30);
+  font-size: 44px;
+  user-select: none;
 }
 
 .price {
@@ -442,17 +587,24 @@ button:disabled{
 
 <body>
 
-<div class="container">
+<div class="container" id="appRoot">
   <div class="card">
 
     <h1>🍽️ 今天吃什么</h1>
 
-    <label class="sr-only" for="canteen">选择食堂</label>
-    <select id="canteen">
-      <option value="all">全部食堂</option>
-      <option value="一食堂">一食堂</option>
-      <option value="二食堂">二食堂</option>
-    </select>
+    <div class="custom-select" id="canteenSelect">
+      <button type="button" class="select-trigger" id="canteenTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="选择食堂">
+        <span class="select-value" id="canteenValue">全部食堂</span>
+        <span class="select-arrow" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M5 7L10 12L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+      <ul class="select-menu" id="canteenMenu" role="listbox" aria-label="食堂列表" hidden>
+        <li role="option" class="select-option" data-value="all" aria-selected="true">全部食堂</li>
+        <li role="option" class="select-option" data-value="一食堂" aria-selected="false">一食堂</li>
+        <li role="option" class="select-option" data-value="二食堂" aria-selected="false">二食堂</li>
+      </ul>
+    </div>
 
     <details class="filters-details" id="filtersDetails">
       <summary class="filters-summary">
@@ -500,108 +652,20 @@ button:disabled{
 </div>
 
 <script>
-const foods = [
-  {canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"尖椒牛肉拌面",price:18,tags:["面食","辣"]},
-  {canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"大盘鸡拌面",price:19,tags:["面食","鸡肉"]},
-  {canteen:"一食堂",floor:"2楼",stall:"兰州牛肉面",name:"红烧牛肉面",price:15,tags:["面食","经典"]},
+/** 修改 data/foods.json 结构或需强制刷新缓存时，递增此数字 */
+const FOODS_DATA_REVISION = "2";
 
-  {canteen:"二食堂",floor:"3楼",stall:"杂粮煎饼",name:"肉松煎饼",price:12,tags:["小吃","煎饼","热门"]},
-  {canteen:"二食堂",floor:"3楼",stall:"杂粮煎饼",name:"双面烤冷面",price:9,tags:["小吃"]},
+/** 允许的 category 值；只有 main 会进入推荐池 */
+const ALLOWED_CATEGORIES = new Set(["main", "side", "snack", "drink"]);
 
-  {canteen:"二食堂",floor:"2楼",stall:"金牌拌饭",name:"招牌烤肉拌饭",price:15.8,tags:["米饭","热门"]},
-  {canteen:"二食堂",floor:"2楼",stall:"金牌拌饭",name:"沙拉烤肉拌饭",price:15.8,tags:["米饭","轻食"]},
-  {canteen:"二食堂",floor:"3楼",stall:"金牌拌饭",name:"沙拉烤肉拌饭",price:16,tags:["米饭","经典"]},
-  {canteen:"二食堂",floor:"3楼",stall:"金牌拌饭",name:"香辣烤肉拌饭",price:16,tags:["米饭","辣"]},
+function foodsDataUrl(){
+  const u = new URL("data/foods.json", window.location.href);
+  u.searchParams.set("v", FOODS_DATA_REVISION);
+  return u.href;
+}
 
-  {canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"广式炒米粉",price:16,tags:["面食","米粉"]},
-  {canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"鲜香扬州炒饭",price:14.5,tags:["米饭","经典"]},
-  {canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"酱香火腿蛋炒饭",price:14.5,tags:["炒饭","火腿","鸡蛋","主食","快餐"]},
-  {canteen:"二食堂",floor:"2楼",stall:"炒饭专家",name:"香煎培根鸡蛋炒饭",price:15,tags:["炒饭","培根","鸡蛋","主食","快餐"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"现炒浇头面",name:"辣椒炒肉浇头面",price:16,tags:["面","辣"]},
-  {canteen:"二食堂",floor:"2楼",stall:"现炒浇头面",name:"农家一碗香浇头面",price:16,tags:["面","香辣"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"鱼之谷鱼粉",name:"酸辣巴沙鱼粉",price:16,tags:["面","酸辣"]},
-  {canteen:"二食堂",floor:"2楼",stall:"鱼之谷鱼粉",name:"肥汁金汤口味巴沙鱼粉",price:15.5,tags:["面","酸辣"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"一纸鸡",name:"大阪照烧鸡肉饭",price:14,tags:["米饭"]},
-  {canteen:"二食堂",floor:"2楼",stall:"一纸鸡",name:"蜀香鸡饭",price:14,tags:["米饭"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"土豆粉",name:"锡纸花甲粉",price:15.8,tags:["粉面","花甲"]},
-  {canteen:"二食堂",floor:"2楼",stall:"土豆粉",name:"众品土豆粉",price:13,tags:["粉面","土豆粉"]},
-  {canteen:"二食堂",floor:"2楼",stall:"土豆粉",name:"鱼豆腐土豆粉",price:14,tags:["粉面","土豆粉","鱼豆腐"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"昆吉双拼饭",name:"双拼饭-照烧鸡腿肉",price:16,tags:["米饭","双拼饭","鸡肉"]},
-  {canteen:"二食堂",floor:"2楼",stall:"昆吉双拼饭",name:"双拼饭-卤汁护心肉",price:16,tags:["米饭","双拼饭","猪肉"]},
-  {canteen:"二食堂",floor:"2楼",stall:"昆吉双拼饭",name:"卤汁护心肉饭套餐",price:16,tags:["米饭","套餐","猪肉"]},
-
-  {canteen:"一食堂",floor:"1楼",stall:"忆德水饺",name:"肉三鲜水饺",price:14.5,tags:["水饺","主食"]},
-  {canteen:"一食堂",floor:"1楼",stall:"忆德水饺",name:"牛肉水饺",price:18,tags:["水饺","主食","牛肉"]},
-  {canteen:"一食堂",floor:"1楼",stall:"忆德水饺",name:"馄饨面",price:11.5,tags:["面类","馄饨","主食"]},
-
-  {canteen:"二食堂",floor:"3楼",stall:"蜀道吉水煮肉",name:"水煮鱼肉",price:16.8,tags:["川菜","鱼肉","下饭菜"]},
-  {canteen:"二食堂",floor:"3楼",stall:"蜀道吉水煮肉",name:"水煮鸡肉",price:16,tags:["川菜","鸡肉","下饭菜"]},
-  {canteen:"二食堂",floor:"3楼",stall:"蜀道吉水煮肉",name:"水煮豆腐",price:14,tags:["川菜","素菜","豆腐","下饭菜"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"自选水饺",name:"馄饨面-小份",price:10,tags:["面类","馄饨","主食"]},
-  {canteen:"二食堂",floor:"2楼",stall:"自选水饺",name:"韭菜鸡蛋饺子",price:16,tags:["水饺","素馅","主食"]},
-  {canteen:"二食堂",floor:"2楼",stall:"自选水饺",name:"现包馄饨大份",price:15,tags:["馄饨","主食"]},
-
-  {canteen:"二食堂",floor:"3楼",stall:"小街牛杂面",name:"小街牛杂面",price:14,tags:["面类","牛杂","主食"]},
-  {canteen:"二食堂",floor:"3楼",stall:"小街牛杂面",name:"小街牛肉面",price:16,tags:["面类","牛肉","主食"]},
-  {canteen:"二食堂",floor:"3楼",stall:"小街牛杂面",name:"小街牛肚面",price:16,tags:["面类","牛肚","主食"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"杭州小笼包",name:"牛肉小笼包套餐",price:15.8,tags:["包子","早餐","牛肉"]},
-  {canteen:"二食堂",floor:"2楼",stall:"杭州小笼包",name:"牛肉小笼包",price:11.8,tags:["包子","早餐","牛肉"]},
-  {canteen:"二食堂",floor:"2楼",stall:"杭州小笼包",name:"掉渣饼+鸡蛋鸡排套餐",price:12,tags:["饼类","早餐","快餐"]},
-
-  {canteen:"二食堂",floor:"3楼",stall:"鲍汁捞饭",name:"鲍汁鸡柳捞饭",price:16.8,tags:["米饭","捞饭","快餐","鸡柳"]},
-  {canteen:"二食堂",floor:"3楼",stall:"鲍汁捞饭",name:"匠心鲍汁排骨捞饭",price:17.8,tags:["米饭","捞饭","快餐","排骨"]},
-  {canteen:"二食堂",floor:"3楼",stall:"鲍汁捞饭",name:"鲍汁大鸡排捞饭",price:16.8,tags:["米饭","捞饭","快餐","鸡排"]},
-
-  {canteen:"一食堂",floor:"1楼",stall:"津五爷大块牛肉饭",name:"爆汁大块牛肉饭",price:15.8,tags:["米饭","牛肉饭","快餐","牛肉"]},
-  {canteen:"一食堂",floor:"1楼",stall:"津五爷大块牛肉饭",name:"番茄大块牛肉饭",price:16.8,tags:["米饭","牛肉饭","快餐","牛肉","番茄"]},
-  {canteen:"一食堂",floor:"1楼",stall:"津五爷大块牛肉饭",name:"双拼大块牛肉饭",price:18.8,tags:["米饭","双拼饭","快餐","牛肉"]},
-
-  {canteen:"一食堂",floor:"1楼",stall:"范书闻麻辣烫麻辣拌",name:"麻辣烫套餐",price:16.8,tags:["麻辣烫","自选","快餐","汤类"]},
-  {canteen:"一食堂",floor:"1楼",stall:"范书闻麻辣烫麻辣拌",name:"麻辣拌套餐",price:19.8,tags:["麻辣拌","干拌","自选","快餐"]},
-
-  {canteen:"二食堂",floor:"3楼",stall:"烤鸭饭",name:"烤鸭饭套餐大份",price:17,tags:["米饭","烤鸭","套餐","快餐"]},
-  {canteen:"二食堂",floor:"3楼",stall:"烤鸭饭",name:"烤鸭+脆皮五花肉",price:17,tags:["烤鸭","五花肉","卤味","快餐"]},
-  {canteen:"二食堂",floor:"3楼",stall:"烤鸭饭",name:"咸鸭蛋",price:2.5,tags:["配菜","卤味","小吃"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"米粉米线",name:"招牌肉沫米粉",price:16,tags:["米粉","肉沫","主食","粉面"]},
-  {canteen:"二食堂",floor:"2楼",stall:"米粉米线",name:"炸蛋米粉",price:14,tags:["米粉","炸蛋","主食","粉面"]},
-  {canteen:"二食堂",floor:"2楼",stall:"米粉米线",name:"肥牛米线",price:15,tags:["米线","肥牛","主食","粉面"]},
-
-  {canteen:"一食堂",floor:"2楼",stall:"淮南牛肉汤饼",name:"牛肉粉丝汤+饼",price:12,tags:["汤粉","牛肉","饼","主食"]},
-  {canteen:"一食堂",floor:"2楼",stall:"淮南牛肉汤饼",name:"拆骨肉粉丝汤+饼",price:12.5,tags:["汤粉","拆骨肉","饼","主食"]},
-  {canteen:"一食堂",floor:"2楼",stall:"淮南牛肉汤饼",name:"牛杂粉丝汤+饼",price:12,tags:["汤粉","牛杂","饼","主食"]},
-
-  {canteen:"二食堂",floor:"3楼",stall:"羊杂面",name:"羊杂面",price:14,tags:["面类","羊杂","主食","汤面"]},
-  {canteen:"二食堂",floor:"3楼",stall:"羊杂面",name:"辣肉拌面",price:14,tags:["面类","拌面","辣肉","主食"]},
-  {canteen:"二食堂",floor:"3楼",stall:"羊杂面",name:"小馆辣肉汤面",price:14,tags:["面类","汤面","辣肉","主食"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"热干面",name:"安徽板面",price:13,tags:["面类","板面","主食","汤面"]},
-  {canteen:"二食堂",floor:"2楼",stall:"热干面",name:"酱爆猪肝浇头面",price:14,tags:["面类","浇头面","猪肝","主食"]},
-  {canteen:"二食堂",floor:"2楼",stall:"热干面",name:"热干面",price:13,tags:["面类","热干面","干拌面","主食"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"渔之谷鱼粉",name:"肥汁金汤口味巴沙鱼粉",price:15.5,tags:["鱼粉","金汤","巴沙鱼","主食","粉面"]},
-  {canteen:"二食堂",floor:"2楼",stall:"渔之谷鱼粉",name:"川香麻辣口味巴沙鱼粉",price:15.5,tags:["鱼粉","麻辣","巴沙鱼","主食","粉面"]},
-  {canteen:"二食堂",floor:"2楼",stall:"渔之谷鱼粉",name:"浓香番茄口味小酥肉鱼粉",price:15,tags:["鱼粉","番茄","小酥肉","主食","粉面"]},
-
-  {canteen:"二食堂",floor:"2楼",stall:"辣椒炒肉",name:"农家一碗香",price:15.8,tags:["盖饭","湘菜","快餐","米饭"]},
-  {canteen:"二食堂",floor:"2楼",stall:"辣椒炒肉",name:"招牌辣椒炒肉",price:15.8,tags:["盖饭","湘菜","辣椒炒肉","米饭","快餐"]},
-  {canteen:"二食堂",floor:"2楼",stall:"辣椒炒肉",name:"湘味小炒茄子",price:12.8,tags:["盖饭","湘菜","茄子","米饭","快餐"]},
-
-  {canteen:"一食堂",floor:"1楼",stall:"天意米粉",name:"炸蛋肉酱米粉",price:14,tags:["米粉","炸蛋","肉酱","主食","粉面"]},
-  {canteen:"一食堂",floor:"1楼",stall:"天意米粉",name:"原味肉酱米粉",price:11,tags:["米粉","肉酱","主食","粉面"]},
-  {canteen:"一食堂",floor:"1楼",stall:"天意米粉",name:"煎蛋肉酱米粉",price:13,tags:["米粉","煎蛋","肉酱","主食","粉面"]},
-
-  {canteen:"一食堂",floor:"3楼",stall:"土家烧饼档",name:"掉渣饼+烤鸡蛋",price:6,tags:["饼类","早餐","小吃","快餐"]},
-  {canteen:"一食堂",floor:"3楼",stall:"土家烧饼档",name:"掉渣饼+鸡柳+小料",price:7.5,tags:["饼类","鸡柳","早餐","小吃","快餐"]},
-  {canteen:"一食堂",floor:"3楼",stall:"土家烧饼档",name:"掉渣饼+鸡蛋+里脊",price:9,tags:["饼类","里脊","鸡蛋","早餐","小吃","快餐"]}
-];
+let foods = [];
+let foodsReady = false;
 
 let current = null;
 let statusTimer = null;
@@ -647,6 +711,195 @@ function showStatus(message){
   }, 2000);
 }
 
+function escapeHtml(s){
+  return String(s)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll("\"","&quot;");
+}
+
+function formatLoadError(err){
+  const name = err && err.name;
+  const msg = err && err.message ? String(err.message) : String(err);
+  if(name === "TypeError" && /fetch|Failed to fetch|Load failed|network/i.test(msg)){
+    return "无法发起请求（常见于使用 file:// 打开页面，请改用本地静态服务器如 Live Server）";
+  }
+  if(/AbortError/i.test(name || "") || /aborted/i.test(msg)){
+    return "请求已取消";
+  }
+  return msg;
+}
+
+/**
+ * 校验并规范化菜单项；无效项记入 skipped，不混入列表。
+ * tags 若非数组则置为空数组并打控制台警告，仍保留该条。
+ */
+function normalizeFoodsArray(rawList){
+  const list = [];
+  const skipped = [];
+
+  rawList.forEach((raw, index) => {
+    const pos = `#${index}`;
+    if(!raw || typeof raw !== "object" || Array.isArray(raw)){
+      skipped.push({ pos, reason: "不是对象" });
+      return;
+    }
+
+    const canteen = typeof raw.canteen === "string" ? raw.canteen.trim() : "";
+    const floor = typeof raw.floor === "string" ? raw.floor.trim() : "";
+    const stall = typeof raw.stall === "string" ? raw.stall.trim() : "";
+    const name = typeof raw.name === "string" ? raw.name.trim() : "";
+    const priceNum = Number(raw.price);
+
+    if(!name){
+      skipped.push({ pos, reason: "name 缺失或为空" });
+      return;
+    }
+    if(!canteen){
+      skipped.push({ pos, reason: "canteen 缺失或为空" });
+      return;
+    }
+    if(!floor){
+      skipped.push({ pos, reason: "floor 缺失或为空" });
+      return;
+    }
+    if(!stall){
+      skipped.push({ pos, reason: "stall 缺失或为空" });
+      return;
+    }
+    if(!Number.isFinite(priceNum)){
+      skipped.push({ pos, reason: `price 无效（当前：${JSON.stringify(raw.price)}）`, name });
+      return;
+    }
+
+    let tags = [];
+    if(Array.isArray(raw.tags)){
+      tags = raw.tags
+        .map(t => (typeof t === "string" ? t.trim() : String(t ?? "").trim()))
+        .filter(Boolean);
+    }else if(raw.tags != null){
+      console.warn(`[foods] ${pos}「${name}」tags 不是数组，已当作无标签`);
+    }
+
+    let category = "main";
+    if(raw.category != null){
+      if(typeof raw.category === "string" && ALLOWED_CATEGORIES.has(raw.category)){
+        category = raw.category;
+      }else{
+        console.warn(`[foods] ${pos}「${name}」category 非法（${JSON.stringify(raw.category)}），已退回 main`);
+      }
+    }
+
+    const image = typeof raw.image === "string" ? raw.image.trim() : "";
+
+    list.push({ canteen, floor, stall, name, price: priceNum, tags, category, image });
+  });
+
+  return { list, skipped };
+}
+
+function setControlsDisabledForFoods(disabled){
+  document.getElementById("primaryBtn")?.toggleAttribute("disabled", disabled);
+  document.getElementById("clearFiltersBtn")?.toggleAttribute("disabled", disabled);
+  document.querySelectorAll(".chip").forEach(b => b.toggleAttribute("disabled", disabled));
+  document.getElementById("canteenTrigger")?.toggleAttribute("disabled", disabled);
+}
+
+async function loadFoods(){
+  const root = document.getElementById("appRoot");
+  const resultEl = document.getElementById("result");
+  const summary = document.getElementById("filtersSummaryText");
+  const statusEl = document.getElementById("status");
+
+  foodsReady = false;
+  root?.classList.add("app-blocked");
+  root?.classList.remove("app-error");
+  root?.setAttribute("aria-busy", "true");
+
+  setControlsDisabledForFoods(true);
+  if(summary) summary.textContent = "菜单加载中…";
+  if(resultEl) resultEl.textContent = "正在加载菜单…";
+  if(statusEl){
+    statusEl.textContent = "";
+    statusEl.classList.remove("show");
+  }
+  if(statusTimer){
+    window.clearTimeout(statusTimer);
+    statusTimer = null;
+  }
+
+  try{
+    const res = await fetch(foodsDataUrl(), { cache: "no-cache" });
+    if(!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText || ""}`.trim());
+    let data;
+    try{
+      data = await res.json();
+    }catch{
+      throw new Error("解析 JSON 失败");
+    }
+    if(!Array.isArray(data)) throw new Error("根节点应为数组");
+
+    const { list, skipped } = normalizeFoodsArray(data);
+    if(skipped.length){
+      console.warn(`[foods] 已跳过 ${skipped.length} 条无效记录：`, skipped);
+    }
+    if(list.length === 0){
+      throw new Error(
+        skipped.length
+          ? "没有通过校验的菜品（请对照 data/foods.schema.json 检查字段）"
+          : "菜单为空数组"
+      );
+    }
+
+    foods = list;
+    foodsReady = true;
+
+    root?.classList.remove("app-blocked");
+    root?.classList.remove("app-error");
+    root?.removeAttribute("aria-busy");
+
+    setControlsDisabledForFoods(false);
+
+    current = null;
+    setActionEnabled(false);
+    setPrimaryLabel(false);
+    if(resultEl) resultEl.textContent = "点一下开始 👆";
+    updateFilterStatus();
+    if(skipped.length){
+      showStatus(`已跳过 ${skipped.length} 条无效菜品（详情见控制台）`);
+    }
+  }catch(err){
+    foods = [];
+    foodsReady = false;
+
+    root?.classList.add("app-blocked");
+    root?.classList.add("app-error");
+    root?.removeAttribute("aria-busy");
+
+    setControlsDisabledForFoods(true);
+
+    const rawMsg = err && err.message ? err.message : String(err);
+    const displayMsg = formatLoadError(err);
+    if(summary) summary.textContent = "菜单加载失败";
+    if(resultEl){
+      resultEl.innerHTML = `
+        <div class="load-error" role="alert">
+          <strong>无法加载菜单</strong>
+          <div style="margin-top:8px;opacity:0.92">${escapeHtml(displayMsg)}</div>
+          <button type="button" class="retry-btn" onclick="loadFoods()">重新加载</button>
+        </div>`;
+    }
+    const hintNet =
+      /file:\/\/|Failed to fetch|fetch|NetworkError|无法发起请求/i.test(rawMsg + displayMsg);
+    showStatus(
+      hintNet
+        ? "请使用本地静态服务器打开项目目录，勿用资源管理器双击打开 HTML。"
+        : "请检查 data/foods.json 是否存在、路径正确且符合 schema。"
+    );
+  }
+}
+
 function setActionEnabled(enabled){
   document.getElementById("favBtn").disabled = !enabled;
   document.getElementById("banBtn").disabled = !enabled;
@@ -688,12 +941,20 @@ function matchStaple(food){
   });
 }
 
+function getCanteenValue(){
+  if(window.__canteenSelect){
+    return window.__canteenSelect.getValue();
+  }
+  return "all";
+}
+
 function getFilteredList(){
-  const canteen = document.getElementById("canteen")?.value || "all";
+  const canteen = getCanteenValue();
   const dislikes = getData("dislikes");
 
   return foods.filter(f=>{
-    return (canteen==="all"||f.canteen===canteen)
+    return f.category === "main"
+      && (canteen==="all"||f.canteen===canteen)
       && !dislikes.includes(f.name)
       && matchTaste(f)
       && matchStaple(f);
@@ -701,6 +962,8 @@ function getFilteredList(){
 }
 
 function updateFilterStatus(){
+  if(!foodsReady) return;
+
   const list = getFilteredList();
   const tasteText = selected.taste.size ? `口味：${Array.from(selected.taste).join("、")}` : "口味：不限";
   const stapleText = selected.staple.size ? `主食：${Array.from(selected.staple).join("、")}` : "主食：不限";
@@ -770,6 +1033,11 @@ function clearFilters(){
 }
 
 function recommend(){
+  if(!foodsReady){
+    showStatus("菜单尚未加载完成");
+    return;
+  }
+
   let list = getFilteredList();
 
   if(list.length===0){
@@ -779,28 +1047,48 @@ function recommend(){
   }
 
   let newFood;
+  do {
+    newFood = list[Math.floor(Math.random() * list.length)];
+  } while (list.length > 1 && current && newFood.name === current.name);
 
-do {
-  newFood = list[Math.floor(Math.random() * list.length)];
-} while (list.length > 1 && current && newFood.name === current.name);
+  current = newFood;
+  setActionEnabled(true);
+  setPrimaryLabel(true);
 
-current = newFood;
-setActionEnabled(true);
-setPrimaryLabel(true);
+  function makeFoodImg(src, alt){
+    const wrap = document.createElement("div");
+    wrap.className = "food-img-wrap";
+    const img = document.createElement("img");
+    img.className = "food-img";
+    img.src = src;
+    img.alt = alt;
+    img.loading = "lazy";
+    img.onerror = function(){
+      this.onerror = null;
+      this.parentElement.innerHTML = '<div class="food-img-fallback">🍽️</div>';
+    };
+    wrap.appendChild(img);
+    return wrap.outerHTML;
+  }
+
+  const imgHtml = current.image
+    ? makeFoodImg(current.image, current.name)
+    : `<div class="food-img-wrap"><div class="food-img-fallback">🍽️</div></div>`;
 
   document.getElementById("result").innerHTML = `
     <div class="food-card">
+      ${imgHtml}
       <div class="top">
-        <span>${current.canteen} · ${current.floor}</span>
+        <span>${escapeHtml(current.canteen)} · ${escapeHtml(current.floor)}</span>
         <span class="price">￥${current.price}</span>
       </div>
 
-      <div class="stall">🏪 ${current.stall}</div>
+      <div class="stall">🏪 ${escapeHtml(current.stall)}</div>
 
-      <div class="food-name">${current.name}</div>
+      <div class="food-name">${escapeHtml(current.name)}</div>
 
       <div class="tags">
-        ${current.tags.map(tag => `<span>${tag}</span>`).join("")}
+        ${(Array.isArray(current.tags) ? current.tags : []).map(tag => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
     </div>
   `;
@@ -885,6 +1173,121 @@ function clearFavorites(){
   renderFavorites();
 }
 
+/**
+ * 初始化自定义食堂选择器（毛玻璃下拉组件）
+ * 对外暴露 window.__canteenSelect API
+ */
+function initCanteenSelect(){
+  const trigger = document.getElementById("canteenTrigger");
+  const menu = document.getElementById("canteenMenu");
+  const valueEl = document.getElementById("canteenValue");
+  const arrow = trigger?.querySelector(".select-arrow");
+  const options = menu?.querySelectorAll(".select-option");
+  if(!trigger || !menu || !valueEl || !options) return;
+
+  let isOpen = false;
+
+  function getValue(){
+    const sel = menu.querySelector('.select-option[aria-selected="true"]');
+    return sel ? sel.dataset.value : "all";
+  }
+
+  function setValue(val){
+    options.forEach(opt => {
+      opt.setAttribute("aria-selected", String(opt.dataset.value === val));
+    });
+    const sel = menu.querySelector('.select-option[aria-selected="true"]');
+    valueEl.textContent = sel ? sel.textContent : "全部食堂";
+  }
+
+  function openMenu(){
+    isOpen = true;
+    menu.hidden = false;
+    trigger.setAttribute("aria-expanded", "true");
+    arrow?.classList.add("open");
+  }
+
+  function closeMenu(){
+    isOpen = false;
+    menu.hidden = true;
+    trigger.setAttribute("aria-expanded", "false");
+    arrow?.classList.remove("open");
+  }
+
+  function onChange(){
+    current = null;
+    setActionEnabled(false);
+    setPrimaryLabel(false);
+    const resultEl = document.getElementById("result");
+    if(resultEl) resultEl.innerText = "已切换食堂/筛选，点一下开始 👆";
+    updateFilterStatus();
+  }
+
+  trigger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  options.forEach(opt => {
+    opt.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const val = opt.dataset.value;
+      if(val !== getValue()){
+        setValue(val);
+        onChange();
+      }
+      closeMenu();
+    });
+  });
+
+  // 点击外部关闭
+  document.addEventListener("click", () => {
+    if(isOpen) closeMenu();
+  });
+
+  // 键盘导航
+  trigger.addEventListener("keydown", (e) => {
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      isOpen ? closeMenu() : openMenu();
+    }
+    if(e.key === "Escape" && isOpen) closeMenu();
+    if((e.key === "ArrowDown" || e.key === "ArrowUp") && !isOpen){
+      e.preventDefault();
+      openMenu();
+    }
+  });
+
+  menu.addEventListener("keydown", (e) => {
+    const items = Array.from(options);
+    const cur = items.findIndex(o => o.getAttribute("aria-selected") === "true");
+
+    if(e.key === "ArrowDown"){
+      e.preventDefault();
+      const next = (cur + 1) % items.length;
+      setValue(items[next].dataset.value);
+    }
+    if(e.key === "ArrowUp"){
+      e.preventDefault();
+      const prev = (cur - 1 + items.length) % items.length;
+      setValue(items[prev].dataset.value);
+    }
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      onChange();
+      closeMenu();
+      trigger.focus();
+    }
+    if(e.key === "Escape"){
+      closeMenu();
+      trigger.focus();
+    }
+  });
+
+  // 对外暴露 API
+  window.__canteenSelect = { getValue, setValue };
+}
+
 // init
 setActionEnabled(false);
 setPrimaryLabel(false);
@@ -892,15 +1295,8 @@ renderChips("tasteChips", TASTE_OPTIONS, "taste");
 renderChips("stapleChips", STAPLE_OPTIONS, "staple");
 document.getElementById("clearFiltersBtn")?.addEventListener("click", clearFilters);
 document.getElementById("filtersDetails")?.removeAttribute("open");
-document.getElementById("canteen")?.addEventListener("change", ()=>{
-  current = null;
-  setActionEnabled(false);
-  setPrimaryLabel(false);
-  const resultEl = document.getElementById("result");
-  if(resultEl) resultEl.innerText = "已切换食堂/筛选，点一下开始 👆";
-  updateFilterStatus();
-});
-updateFilterStatus();
+initCanteenSelect();
+loadFoods();
 </script>
 
 </body>
