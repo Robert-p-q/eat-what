@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#C9DFF7">
+<title>今天吃什么</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container" id="appRoot">
+  <div class="card">
+
+    <h1>今天吃什么</h1>
+
+    <!-- 食堂选择 -->
+    <div class="custom-select" id="canteenSelect">
+      <button type="button" class="select-trigger" id="canteenTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="选择食堂">
+        <span class="select-value" id="canteenValue">全部食堂</span>
+        <span class="select-arrow" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M5 7L10 12L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+      <ul class="select-menu" id="canteenMenu" role="listbox" aria-label="食堂列表" hidden>
+        <li role="option" class="select-option" data-value="all" aria-selected="true">全部食堂</li>
+        <li role="option" class="select-option" data-value="一食堂" aria-selected="false">一食堂</li>
+        <li role="option" class="select-option" data-value="二食堂" aria-selected="false">二食堂</li>
+      </ul>
+    </div>
+
+    <!-- 筛选 -->
+    <details class="filters-details" id="filtersDetails">
+      <summary class="filters-summary">
+        <span class="filters-summary-left">筛选</span>
+        <span class="filters-summary-right" id="filtersSummaryText">口味：不限；主食：不限（可选 0 道）</span>
+      </summary>
+      <div class="filters" aria-label="筛选条件">
+        <div class="filter-group" aria-label="口味筛选">
+          <div class="filter-title">口味</div>
+          <div class="chip-row" id="tasteChips"></div>
+        </div>
+        <div class="filter-group" aria-label="主食筛选">
+          <div class="filter-title">主食</div>
+          <div class="chip-row" id="stapleChips"></div>
+        </div>
+        <div class="filter-group" aria-label="风格筛选">
+          <div class="filter-title">风格</div>
+          <div class="chip-row" id="cuisineChips"></div>
+        </div>
+        <div class="filter-group" aria-label="食材筛选">
+          <div class="filter-title">食材</div>
+          <div class="chip-row" id="proteinChips"></div>
+        </div>
+        <div class="filter-group" aria-label="价格筛选">
+          <div class="filter-title">价格</div>
+          <div class="price-range" id="priceRange">
+            <select id="priceMin" class="price-select" aria-label="最低价">
+              <option value="0">¥0</option>
+              <option value="5">¥5</option>
+              <option value="10">¥10</option>
+              <option value="15">¥15</option>
+              <option value="20">¥20</option>
+            </select>
+            <span class="price-sep">—</span>
+            <select id="priceMax" class="price-select" aria-label="最高价">
+              <option value="999">不限</option>
+              <option value="5">¥5</option>
+              <option value="10">¥10</option>
+              <option value="15">¥15</option>
+              <option value="20">¥20</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button id="clearFiltersBtn" type="button" class="btn-ghost">清空筛选</button>
+        </div>
+      </div>
+    </details>
+
+    <!-- 推荐主按钮（固定在底部） -->
+    <div class="primary-wrap">
+      <button id="primaryBtn" type="button">开始推荐</button>
+    </div>
+
+    <!-- 结果区 -->
+    <div class="result" id="result" aria-live="polite">
+      <div class="init-hint">
+        <span class="init-hint-icon">🍽️</span>
+        <span class="init-hint-text">选好食堂和口味，点一下开始</span>
+      </div>
+    </div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+
+    <!-- 操作按钮组 -->
+    <div class="action-row">
+      <button id="favBtn" type="button" class="btn-secondary" disabled>收藏</button>
+      <button id="banBtn" type="button" class="btn-secondary" disabled>不想吃</button>
+    </div>
+
+    <div class="action-row">
+      <button id="showFavBtn" type="button" class="btn-secondary">收藏列表</button>
+      <button id="clearFavBtn" type="button" class="btn-secondary" disabled>清空收藏</button>
+    </div>
+
+    <!-- 收藏列表 -->
+    <div class="fav-list" id="favList" hidden>
+      <ul class="fav-ul" id="favUl"></ul>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

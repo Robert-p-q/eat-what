@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+tools/__pycache__/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Netlify
+.netlify/
+
+# Claude agent config
+.claude/
+.agents/
+
+# Local project files
+项目要求
